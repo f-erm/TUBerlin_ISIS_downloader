@@ -19,7 +19,7 @@
   modify the script yourself, designated place can be found at the bottom of the
   script. To learn how to do it, the scripts functions are documented below.
   After each run you will find a summary of it in new file called "isislog.txt"
-  IMPORTANT: You will need to creat a "data.txt" file, containing information
+  IMPORTANT: You will need to create a "data.txt" file, containing information
   such as your TUBit username and password, as the script won't be able to
   log into your ISIS account without it. Checkout 'get_data()' below to learn how.
 
@@ -41,7 +41,7 @@
       is reseved for a specific argument.
       line 1: put your username here
       line 2: put your password here
-      line 3: put the courses you do not want to be check here, seperated by ','.
+      line 3: put the courses you do not want to be checked here, seperated by ','.
               Use exactly the same name as ISIS.
               If you want all availible courses, input "none"
       line 4: put the path, where you want your coursefolders to be created, here.
@@ -60,7 +60,7 @@
       are created under savepath. If savepath is not specified, they are created
       in the current directory. If the folders already exist, it will check which
       files are in there, to only download the new files. To speed up the process,
-      a new file called "isisignorefile.txt" in which all not in a pdf file resulting
+      a new file called "isisignorefile.txt", in which all not in a pdf file resulting
       links are saved, will be created. If you do not want that, set "ignore" to "none".
       E.g: standartrun(browser,course_list, savepath = "/home/user/", ignore = "none")
 
@@ -91,15 +91,19 @@
 
 #THIS IS A WORK IN PROGRESS
   Possible issues:
+
     -Since every course uses a different scheme to name its files, some courses
-    might be unable to find a name for their files, forcing the script to download
-    every single file in that course, every time it is executed. This will result
-    in significant delays.
-    Currently tested and working on:
-    Info-Prop,Ana1fIng WS2019/20, LinAlg WS201920, WS 19/20 IntroProg, ROrg WS 19/20, [19/20 WiSe] FoSA
-  -Planned features:
+      might be unable to find a name for their files, forcing the script to download
+      every single file in that course, every time it is executed. This will result
+      in significant delays.
+      Currently tested and working on:
+      Info-Prop,Ana1fIng WS2019/20, LinAlg WS201920, WS 19/20 IntroProg, ROrg WS 19/20, [19/20 WiSe] FoSA
+
+  Planned features:
+
     -Currently, PDFs are the only supported file type. Given recent developments,
     Video files will be more prevalent soon, so support for MP4 and other formats
     is needed
+
     -To make the script more accessible for those without programming knowledge,
     a small setup script would be neat.
