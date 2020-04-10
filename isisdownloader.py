@@ -62,7 +62,7 @@ def movefiles(src,dst,list):
         logwrite("path is not valid. src:" + str(scr) +" dst: " +str(dst))
 
 
-def simpledownload(browser,folder,format=None,ignorefile='none'):
+def simpledownload(browser,folder,format=None,ignorefile="isisignorefile.txt"):
     #Download all pdf's on current page and save them in folder. Requires
     #Browser instance. 'format' allows filtering of availible links for a
     #given string. ignorefile takes filepath, where list of links not resulting
@@ -203,12 +203,17 @@ def setup_browser(username,password):
     browser["j_username"] = username
     browser["j_password"] = password
     browser.submit_selected()
-    return browser
+    if browser.get_url() == "https://isis.tu-berlin.de/my/":
+        return browser
+    else:
+        raise Exception("Unable to log into ISIS")
 
 
-def get_courses(browser,ignore = []):
+def get_courses(browser,ignore = [],cleaned=True):
     #Find all availible courses and return them as list of (link,name) tuples.
-    #'ignore' takes list of courses names, which will be excluded.
+    #'ignore' takes list of courses names, which will be excluded. Alternatively,
+    #you can represent them as one string, using ';;' to divide the courses.
+    #Set cleaned to False, to get courses exactly as they are listed in ISIS
     soup = browser.get_current_page()
     #Find course names
     filter_tags = ["Meine Kurse","Alle Kurse","Kalender","Meine Startseite"]
@@ -225,7 +230,7 @@ def get_courses(browser,ignore = []):
                 link_list.append(link['href'])
     #Remove courses to be ignored
     if isinstance(ignore,str):
-        ignore.split(',')
+        ignore = ignore.split(';;')
     if ignore != [] and ignore != ["none"]:
         if len(link_list) == len(link_name_list):
             for course in list(link_name_list):
@@ -234,12 +239,9 @@ def get_courses(browser,ignore = []):
                     link_name_list.remove(course)
         else:
             print("Error: unable to find courses")
-    print("Availible courses:")
-    #Clean course names and return as list of (link,name) tuples
-    link_name_list = [namify(i) for i in link_name_list]
-    for course in link_name_list:
-        print(course)
-    print("")
+    #Clean course names if desired and return as list of (link,name) tuples
+    if cleaned:
+        link_name_list = [namify(i) for i in link_name_list]
     return list(zip(link_list,link_name_list))
 
 
@@ -260,10 +262,11 @@ def get_data(datafile):
     #1=password
     #2=subjects to be ignored. use 'none' if all subjects are wanted
     #3=path where course folders will be created. Use "none" for current dir
+    #4...=additional courses to be downloaded. Format: "<url>;;<path>"
     try:
         with open(datafile) as dfile:
             data = dfile.read().splitlines()
-        if len(data) == 4:
+        if len(data) >3:
             return data
         else:
             print("wrong dataformat. Line 1 = username, 2 = password, 3=subjects"
@@ -309,21 +312,3 @@ def standartrun(browser,course_list,savepath = os.getcwd(), ignore = "isisignore
         simpledownload(browser,os.path.join(savepath,link[1]),
         ignorefile= ignore)
         print("\n")
-
-
-
-################################################################################
-data = get_data("data.txt")
-browser = setup_browser(data[0],data[1])
-course_list = get_courses(browser,ignore=data[2])
-standartrun(browser,course_list,savepath = data[3])
-
-###ADD YOUR CODE BELOW:###
-
-
-
-
-###ADD YOUR CODE ABOVE###
-
-logout(browser)
-################################################################################

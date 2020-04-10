@@ -12,16 +12,23 @@
 
 
 #DOCUMENTATION
-  By default this script will check every courses mainpage and download the missing
-  files. Since some courses place their files on seperate pages
+  Start by running "setup.py". It will setup a datafile, containing your login
+  data and personal preferences (e.g what courses you do not want to be downloaded).
+  By default this script will check every courses mainpage and download the
+  missing files. Since some courses place their files on seperate pages
   (e.g 'Rechnerorganisations' placing its lecture scripts under
   ...mod/folder/view.php?id=731755 instead of its mainpage), you might have to
-  modify the script yourself, designated place can be found at the bottom of the
-  script. To learn how to do it, the scripts functions are documented below.
-  After each run you will find a summary of it in new file called "isislog.txt"
-  IMPORTANT: You will need to create a "data.txt" file, containing information
-  such as your TUBit username and password, as the script won't be able to
-  log into your ISIS account without it. Checkout 'get_data()' below to learn how.
+  add those pages yourself. Setup.py will ask you wether you want to do that, all
+  you have to do is follow its instructions. You will need the URL of the page
+  you want to be checked and a folder, where you want the files to be stored.
+  It is advised to add these options later on. Run setup.py again to change any
+  settings you have made. If you want to, you can modify the script yourself,
+  designated place can be found at the bottom of main.py. To learn how to do it,
+  the scripts functions are documented below. After each run you will find a
+  summary of it in new file called "isislog.txt". Once you are ready, run
+  main.py to start downloading.
+  IMPORTANT: As of now, renaming the downloaded files is not supported, and will
+  lead to duplicates!!
 
     -setup_browser(username,password):
       Creates the browser instance, which is needed to execute the scripts
@@ -29,10 +36,13 @@
       TUBit username and password are needed to log you in.
       E.g: browser = setup_browser("<myname>","<mypassword>")
 
-    -get_courses(browser,ignore = []):
+    -get_courses(browser,ignore = [],cleaned=True):
       Take a browser object and get all the courses you are subscribed to. If you
       want to exclude some courses (e.g. "EECS-Studium"), set ignore to a list,
-      containing their names (exactly as displayed in ISIS) as strings.
+      containing their names (exactly as displayed in ISIS) as strings. By
+      default the returned course names will be modifyed, so they can be used to
+      name folders after them. Set cleaned to False to get the names as displayed
+      in ISIS.
       E.g: course_list = get_courses(<browserinstance>,ignore = ["EECS-Studium","Info-Prop"])
 
     -get_data(datafile):
@@ -46,12 +56,15 @@
               If you want all availible courses, input "none"
       line 4: put the path, where you want your coursefolders to be created, here.
               If you want the current directory, just type "none"
+      line 5 and onwards: Add any additional pages you want to be checked here.
+              Use format "<url>;;<path to where you want to store your files>"
       Example for a datafile:
             "
             myname
             mypassword
             none
             none
+            https://isis.tu-berlin.de/mod/folder/view.php?id=757931;;/home/user/projects/
             "
 
     -standartrun(browser,course_list,savepath = os.getcwd(), ignore = "isisignorefile.txt")
@@ -105,5 +118,6 @@
     Video files will be more prevalent soon, so support for MP4 and other formats
     is needed
 
-    -To make the script more accessible for those without programming knowledge,
-    a small setup script would be neat.
+    -Given the way the sript handles duplicates, it is not possible to rename files.
+    This might be an apreciated addition, though quite hard to execute, at least
+    in the current format
