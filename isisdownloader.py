@@ -286,14 +286,18 @@ def standartrun(browser,course_list,savepath = os.getcwd(), ignore = "isisignore
     logwrite("",reset=True)
     #Prevent ignorefile from becoming too big
     if ignore != "none":
-        ig = open(ignore,'r')
-        ig.seek(0)
-        if len(ig.readlines())>80:
-            ig.close()
-            ig = open(ignore,'w')
-            ig.close()
-        else:
-            ig.close()
+        try:
+            ig = open(ignore,'r')
+            ig.seek(0)
+            if len(ig.readlines())>80:
+                ig.close()
+                ig = open(ignore,'w')
+                ig.close()
+            else:
+                ig.close()
+        except:
+            logwrite("unable to open ignorefile")
+            exit()
     #Create course folders in savepath
     if savepath != "none":
         coursefolders = os.listdir(savepath)
