@@ -118,6 +118,12 @@
     Video files will be more prevalent soon, so support for MP4 and other formats
     is needed
 
+    -Despite the existince of the "movefiles" function, it is actually not possible
+    to move files out of their folder, as this will lead to them not being recongnized
+    by the script anymore, resulting in duplicates. In the future the script will
+    also check all subfolders of a folder for their content, to make organization
+    inside a course possible. This should be rather easy, I just haven't had the time yet.
+
     -Given the way the sript handles duplicates, it is not possible to rename files.
     This might be an apreciated addition, though quite hard to execute, at least
     in the current format
