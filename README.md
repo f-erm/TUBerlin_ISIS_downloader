@@ -92,6 +92,10 @@
       you. It will move all files from src to dst (both given as path), whose names
       contain at least one of the terms given in list. One possible usecase would be
       to move all assignments to a seperate folder.
+      IMPORTANT: To be recognized by the script the files still need to be inside
+      their designated coursefolders. You can create as many subfolders in there as
+      you want and move your files to any of them, as long as they stay inside their
+      coursefolder
       E.g: movefiles("/home/user/","/home/user/assignments",["Übung","Aufgabe","TUT"])
 
 
@@ -115,14 +119,9 @@
   Planned features:
 
     -Currently, PDFs are the only supported file type. Given recent developments,
-    Video files will be more prevalent soon, so support for MP4 and other formats
-    is needed
-
-    -Despite the existince of the "movefiles" function, it is actually not possible
-    to move files out of their folder, as this will lead to them not being recongnized
-    by the script anymore, resulting in duplicates. In the future the script will
-    also check all subfolders of a folder for their content, to make organization
-    inside a course possible. This should be rather easy, I just haven't had the time yet.
+    Video files are more prevalent now, so support for MP4 and other formats
+    could be needed. However, since they take up so much room and take quite a
+    while to download, I am not sure wether they fit the usecase of this script.
 
     -Given the way the sript handles duplicates, it is not possible to rename files.
     This might be an apreciated addition, though quite hard to execute, at least

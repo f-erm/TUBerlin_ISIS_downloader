@@ -77,7 +77,7 @@ def setup():
     while not (os.path.exists(path) or path=="none"):
         path = input("Enter path in which course folders will be created, use 'none' to select current folder:\n")
         if path != "none" and not os.path.exists(path):
-            print(path + "is not a valid path")
+            print(path + " is not a valid path")
     data.append(path)
     #Get additional sites
     extra = ""

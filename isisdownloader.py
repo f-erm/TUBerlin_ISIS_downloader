@@ -142,9 +142,20 @@ def simpledownload(browser,folder,format=None,ignorefile="isisignorefile.txt"):
         #Download link and save as name in folder. If name = None, get new name,
         link = str(linktuple[0])
         filename = linktuple[1]
+        foldercontent = []
+
+        def get_subfolders(folder,list):
+            #add content of folder and and all its subfolders to list
+            list.extend([f for f in os.listdir(folder)
+            if os.path.isfile(os.path.join(folder,f))])
+            for sub in [d for d in os.listdir(folder)
+            if os.path.isdir(os.path.join(folder, d))]:
+                get_subfolders(os.path.join(folder,sub),list)
+
+        get_subfolders(folder,foldercontent)
         #Check already downloaded files
-        if filename != None and (filename in os.listdir(folder) or
-        filename+".pdf" in os.listdir(folder)):
+        if filename != None and (filename in foldercontent or
+        filename+".pdf" in foldercontent):
             print("file already downloaded")
         else:
             timer = time()
@@ -166,8 +177,8 @@ def simpledownload(browser,folder,format=None,ignorefile="isisignorefile.txt"):
                     except:
                         logwrite("problem with "+ link)
                     #Handle duplicate names
-                    if (filename in os.listdir(folder) or
-                    (filename+".pdf" in os.listdir(folder))):
+                    if (filename in foldercontent or
+                    (filename+".pdf" in foldercontent)):
                         print("already downloaded")
                         return
                 try:
