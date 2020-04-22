@@ -2,23 +2,13 @@ import requests
 import sys
 import os
 
-#Silent-mode to be added later. For now, just mute the bot yourself
-#Does not accept special characters like '#'.
-#See "valid" in line 39 to see all valid characters
-
-
-######################### YOUR DATA HERE #############################
-token = ""
-chat_id = 
-######################### YOUR DATA HERE #############################
-
 
 def sendmsg(msg,token,chat_id):
     #send message from token bot to user under chat_id
-    msg = str(msg)
     print(msg)
-    resp = requests.get("https://api.telegram.org/bot"+str(token)+
-    "/sendMessage?chat_id="+str(chat_id)+"&text="+msg)
+    para= {"chat_id":chat_id,"text":msg}
+    resp = requests.get(f"https://api.telegram.org/bot{token}/sendMessage?"
+    ,params=para)
 
 def getfilecontent(filename):
     #if filename exists, return its content as string.
@@ -28,19 +18,25 @@ def getfilecontent(filename):
     else:
         return "no such file found"
 
+def read_bot_data(filename):
+    #read bot data from file and return as [token,chat_id]
+    try:
+        with open(filename,mode="r") as file:
+            data = file.read().splitlines()
+            data[0] = data[0].replace('token=','')
+            data[1] = data[1].replace('chat_id=','')
+            return data
+    except:
+        print("Unable to read Bot_data, check format again.")
+        sys.exit()
+
 #main
-if len(sys.argv) != 2:
-    print("need exactly 1 argument")
+if len(sys.argv) != 3:
+    print("need exactly 2 arguments. 1: bot_data  2:file_to_send")
 else:
-    if isinstance(sys.argv[1],str):
-        print("send message to: "+str(chat_id))
-        try:
-            msg = getfilecontent(sys.argv[1])
-            #clean message
-            valid='?-_.() abcdefghijklmnopqrstuvwxyzöäüABCDEFGHIJKLMNOPQRSTUVWXYZÖÄÜ0123456789\n'
-            msg = ''.join(c for c in msg if c in valid)
-            sendmsg(msg,token,chat_id)
-        except:
-            print("unable to send message!")
-    else:
-        print("argument needs to be string")
+    data = read_bot_data(sys.argv[1])
+    print(f"send message to: {data[1]}\n")
+    try:
+        sendmsg(getfilecontent(sys.argv[2]),data[0],data[1])
+    except:
+        print("unable to send message!")
