@@ -1,34 +1,47 @@
-#INTRODUCTION
+##### TU-Berlin Isis-downloader
+
+---
+
+
+## INTRODUCTION
   Hello and welcome to the the Isis-downloader, designed to automate the daily
   download of your lecture scripts and assignments. This script will automatically
   log into your TU_Berlin ISIS account, get all the courses your are subscribed to,
   check which files you have already downloaded and download the rest. Read the
-  documentation to learn how to set it up.
+  Setup section below to learn how to set it up.
 
 
-#DEPENDENCIES
+## IMPORTANT!!!
+This is a private project which does in no way represent the TU-Berlin.
+By using this code you take on full responsibility for any sort of resulting
+damages.
+
+
+## DEPENDENCIES
   To run this script you'll need to install the modules 'bs4' and 'mechanicalsoup'.
   Use pip install <module> to install them.
 
 
-#DOCUMENTATION
+## SETUP
   Start by running "setup.py". It will setup a datafile, containing your login
-  data and personal preferences (e.g what courses you do not want to be downloaded).
+  data and personal preferences (e.g what courses you want to be downloaded).
   By default this script will check every courses mainpage and download the
-  missing files. Since some courses place their files on seperate pages
-  (e.g 'Rechnerorganisations' placing its lecture scripts under
-  ...mod/folder/view.php?id=731755 instead of its mainpage), you might have to
-  add those pages yourself. Setup.py will ask you wether you want to do that, all
-  you have to do is follow its instructions. You will need the URL of the page
-  you want to be checked and a folder, where you want the files to be stored.
-  It is advised to add these options later on. Run setup.py again to change any
-  settings you have made. If you want to, you can modify the script yourself,
-  designated place can be found at the bottom of main.py. To learn how to do it,
-  the scripts functions are documented below. After each run you will find a
-  summary of it in new file called "isislog.txt". Once you are ready, run
-  main.py to start downloading.
+  missing files. Since some courses place their files on seperate pages,
+  you might have to add those pages yourself. Setup.py will ask you wether you
+  want to do that, all you have to do is follow its instructions. You will
+  need the URL of the page you want to be checked and a folder, where you want
+  the files to be stored. It is advised to add these options later on.
+  Run setup.py again to change any settings you have made. If you want to,
+  you can modify the script yourself, designated place can be found at the
+  bottom of main.py. To learn how to do it, the scripts functions are documented
+  below. After each run you will find a summary of it in new file called
+  "isislog.txt". Once you are ready, run main.py to start downloading.
+
   IMPORTANT: As of now, renaming the downloaded files is not supported, and will
   lead to duplicates!!
+
+
+## DOCUMENTATION
 
     -setup_browser(username,password):
       Creates the browser instance, which is needed to execute the scripts
@@ -36,10 +49,8 @@
       TUBit username and password are needed to log you in.
       E.g: browser = setup_browser("<myname>","<mypassword>")
 
-    -get_courses(browser,ignore = [],cleaned=True):
-      Take a browser object and get all the courses you are subscribed to. If you
-      want to exclude some courses (e.g. "EECS-Studium"), set ignore to a list,
-      containing their names (exactly as displayed in ISIS) as strings. By
+    -get_courses(browser,cleaned=True):
+      Take a browser object and get all the courses you are subscribed to. By
       default the returned course names will be modifyed, so they can be used to
       name folders after them. Set cleaned to False to get the names as displayed
       in ISIS.
@@ -51,11 +62,11 @@
       is reseved for a specific argument.
       line 1: put your username here
       line 2: put your password here
-      line 3: put the courses you do not want to be checked here, seperated by ','.
+      line 3: put the courses you want to be downloaded here, seperated by ','.
               Use exactly the same name as ISIS.
-              If you want all availible courses, input "none"
+              If you want all availible courses, input ""
       line 4: put the path, where you want your coursefolders to be created, here.
-              If you want the current directory, just type "none"
+              If you want the current directory, just type ""
       line 5 and onwards: Add any additional pages you want to be checked here.
               Use format "<url>;;<path to where you want to store your files>"
       Example for a datafile:
@@ -74,15 +85,12 @@
       in the current directory. If the folders already exist, it will check which
       files are in there, to only download the new files. To speed up the process,
       a new file called "isisignorefile.txt", in which all not in a pdf file resulting
-      links are saved, will be created. If you do not want that, set "ignore" to "none".
+      links are saved, will be created. If you do not want that, set "ignore" to None.
       E.g: standartrun(browser,course_list, savepath = "/home/user/", ignore = "none")
 
-    -simpledownload(browser,folder,format=None,ignorefile='none'):
+    -simpledownload(browser,folder,ignorefile='none'):
       Download all files on current browser page and save them in folder (given as path).
       If you want to speedup the process, you can again specify a ignorefile.
-      For some courses it might be helpful to specify a format, so only links containing
-      said format will be downloaded
-      (e.g "https://isis.tu-berlin.de/mod/resource/view.php?id=").
       Use browser.open(<url>) to change to the page you want to checkout.
       E.g: browser.open("https://isis.tu-berlin.de/mod/folder/view.php?id=757931")
            simpledownload(browser,"/home/user/",ignorefile = "isisignorefile.txt")
@@ -99,14 +107,14 @@
       E.g: movefiles("/home/user/","/home/user/assignments",["Übung","Aufgabe","TUT"])
 
 
-#ABOUT THE BOT
+## ABOUT THE BOT
   This script includes a telegram-bot to notify you about new downloaded files.
   Since this script is intended to be run remotely, this can come in handy.
   Just open the telegram_bot folder and follow the instructions to set it up.
   Use it to send yourself the contents of isislog.txt
 
 
-#THIS IS A WORK IN PROGRESS
+## THIS IS A WORK IN PROGRESS
   Possible issues:
 
     -Since every course uses a different scheme to name its files, some courses

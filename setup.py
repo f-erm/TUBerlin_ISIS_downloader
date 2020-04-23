@@ -1,21 +1,23 @@
 from isisdownloader import setup_browser,get_courses
+from getpass import getpass
 import os
 
 
 def display_data(data):
     #Display all the data in data
     print("Username: "+data[0])
-    pw = ''
-    for i in range(len(data[1])):
-        pw += '*'
+    pw = '*'*len(data[1])
     print("Password: "+pw)
-    print("Courses to be ignored: ",end='')
+    print("Courses to be downloaded: ",end='')
     for i in data[2]:
         print(i, end = '')
         if data[2].index(i) != len(data[2])-1:
             print(" , ",end='')
     print("\n",end='')
-    print("Path to store your files: "+data[3])
+    if data[3]=="":
+        print("Path to store your files: current dir")
+    else:
+        print("Path to store your files: "+data[3])
     print("Sites to also be downloaded: ")
     counter = 4
     while len(data)>counter:
@@ -35,7 +37,7 @@ def setup():
     un = input("Enter your tuBIT username: ")
     data.append(un)
     #Get pw
-    pw = input("Enter your password: ")
+    pw = getpass("Enter your password: ")
     data.append(pw)
     #Display availible courses
     print("Logging into ISIS, this might take a few seconds...")
@@ -48,13 +50,13 @@ def setup():
     print("Availible courses:")
     for c, course in enumerate(subjects,start=1):
         print(str(c)+": "+course[1])
-    #Get Courses to be ignored
+    #Get Courses to be downloaded
     succes = False
     while not succes:
-        ignore = input("Enter courses you want to be ignored, divided by ','. type 'none' to get all. Example: 1,3,6\n")
-        if ignore != "none":
-            ignore = ignore.split(',')
-            for i in ignore:
+        inp= input("Enter courses you want to download, divided by ','. Press return to get all. Example: 1,3,6\n")
+        if inp != "":
+            inp = inp.split(',')
+            for i in inp:
                 if i.isdigit() and int(i)<=len(subjects):
                     succes = True
                 else:
@@ -62,21 +64,15 @@ def setup():
                     succes = False
                     break
         else:
-            ignore = ["none"]
+            inp = list(range(len(subjects)))
             succes = True
-    ignorelist = []
-    for i in ignore:
-        if i.isdigit():
-            ignorelist.append(subjects[int(i)-1][1])
-        else:
-            ignorelist.append(i)
-    data.append('')
-    data[2]=ignorelist
+    courselist = [subjects[int(i)-1][1] for i in inp]
+    data.append(courselist)
     #Get Path
-    path = ''
-    while not (os.path.exists(path) or path=="none"):
-        path = input("Enter path in which course folders will be created, use 'none' to select current folder:\n")
-        if path != "none" and not os.path.exists(path):
+    path = '%'
+    while not (os.path.exists(path) or path==""):
+        path = input("Enter path in which course folders will be created, press return to select current folder:\n")
+        if path != "" and not os.path.exists(path):
             print(path + " is not a valid path")
     data.append(path)
     #Get additional sites
@@ -107,7 +103,7 @@ def setup():
 
 datafile_name = "data.txt"
 #Open file and save lines in data list. data[2] is a list itself
-print("Hello and welcome to the TU-Berlin Isis-Downloader.")
+print("Hello and welcome to the TU-Berlin Isis-Downloader setup")
 try:
     if datafile_name in os.listdir():
         with open(datafile_name, "r") as datafile:
@@ -115,7 +111,6 @@ try:
             data=datafile.read().splitlines()
             if len(data)>2:
                 data[2]=data[2].split(';;')
-    datafile = open(datafile_name,mode='w')
 except:
     print("unable to to read data.txt")
     os._exit(1)
@@ -134,16 +129,9 @@ else:
     else:
         data = setup()
 #Convert data[2] from list back to string
-if data[2] != ['none']:
-    ignorenames = ''
-    for name in data[2]:
-        ignorenames += name
-        if data[2].index(name)<len(data[2])-1:
-            ignorenames += ';;'
-    data[2]=ignorenames
-else:
-    data[2]="none"
+data[2] = "".join([c+";;" for c in data[2]])[:-2]
 #Save data in file
+datafile = open(datafile_name,mode='w')
 datafile.seek(0)
 for d in data:
     datafile.write(d+"\n")
