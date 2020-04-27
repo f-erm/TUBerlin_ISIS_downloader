@@ -111,6 +111,8 @@ try:
             data=datafile.read().splitlines()
             if len(data)>2:
                 data[2]=data[2].split(';;')
+    else:
+        data = []
 except:
     print("unable to to read data.txt")
     os._exit(1)
