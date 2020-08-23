@@ -108,7 +108,7 @@ def download(linktuple,browser,folder):
                 return None
         try:
             #Download file
-            with open(folder+"/"+filename, 'wb') as f:
+            with open(folder+"/"+filename+".pdf", 'wb') as f:
                 f.write(response.content)
             logwrite("Downloaded file "+ filename + " in "
             +str(round((time()-timer),6))+ " seconds")
