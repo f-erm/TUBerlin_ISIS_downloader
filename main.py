@@ -1,41 +1,42 @@
 from isisdownloader import *
 
-print("Logging into Isis, this will take a few seconds...")
-data = get_data("data.txt")
-browser = setup_browser(data[0],data[1])
-course_list = get_courses(browser)
-print("Availible courses:")
-for course in course_list:
-    print(course[1])
-course_list = [c for c in course_list if c[1] in
-list(map(namify,data[2].split(";;")))]
-print("\nOf which will be downloaded:")
-for course in course_list:
-    print(course[1])
-print("")
-standartrun(browser,course_list,savepath = data[3])
-#Handle additional pages
-counter = 4
-while len(data)>counter:
+if __name__ == "__main__":
+    logfile_name = "isislog.txt"
+
+    #Setup
+    print("Logging into Isis, this will take a few seconds...")
     try:
-        split = data[counter].split(";;")
-        if not os.path.exists(split[1]):
-            try:
-                os.mkdir(split[1])
-            except:
-                print("Unable to create folder "+split[1])
-        browser.open(split[0])
-        simpledownload(browser,split[1])
+        data = get_data("data.txt")
     except:
-        logwrite("Unable to download additional page: "+data[counter])
-    counter += 1
+        print("unable to open datafile. Run setup.py to fix your Datafile")
+        exit()
+    downloader = isisdownloader(data[0],data[1],logfile_name,data[4])
 
-###ADD YOUR CODE BELOW:###
+    #Show and filter the courses
+    course_list = downloader.get_courses(cleaned=False)
+    course_list = [c for c in course_list if c[1] in data[2]]
+    print("Courses to be downloaded:")
+    for course in course_list:
+        print(namify(course[1]))
 
+    #Download the courses
+    downloader.standartrun(course_list,savepath = data[3])
 
+    #Handle additional pages
+    for c in data[5:]:
+        try:
+            split = c.split(";;")
+            if not os.path.exists(split[1]):
+                    os.mkdir(split[1])
+            downloader.change_to_site(split[0])
+            downloader.simpledownload(browser,split[1])
 
+        except:
+            downloader.logwrite("Unable to download additional page: "+c)
 
-
-###ADD YOUR CODE ABOVE###
-
-logout(browser)
+    #end
+    downloader.end()
+    print("Logs: ")
+    with open(logfile_name,mode='r') as file:
+        for line in file.read().splitlines():
+            print(line)
