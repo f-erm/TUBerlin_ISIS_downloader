@@ -3,6 +3,7 @@ from time import time
 import mechanicalsoup
 import os
 import shutil
+import re
 
 
 
@@ -35,7 +36,7 @@ class isisdownloader:
         try:
             self.ignorefile = open(ignorefile_name,mode = 'a+')
             self.ignorefile.seek(0)
-            self.ignorelinks = file.read().splitlines()
+            self.ignorelinks = self.ignorefile.read().splitlines()
             #Prevent ignorefile from becoming too big
             if len(self.ignorelinks)>100:
                 self.ignorefile.close()
@@ -58,7 +59,7 @@ class isisdownloader:
 
     def extend_ignorelist(self,link):
         '''Adds link to ignorefile, if file is given'''
-        if self.ignorefile and not self.ignorefile.isclosed:
+        if self.ignorefile and not self.ignorefile.closed:
             if link not in self.ignorelinks:
                 self.ignorefile.write(link + "\n")
 
@@ -262,9 +263,11 @@ def get_data(datafile):
 
 def namify(name):
     '''Turn string into a viable filename'''
-    valid ="-_.() abcdefghijklmnopqrstuvwxyzöäü"\
+    valid ="-_() abcdefghijklmnopqrstuvwxyzöäü"\
     "ABCDEFGHIJKLMNOPQRSTUVWXYZÖÄÜ0123456789"
     filename = ''.join(c for c in name if c in valid)
+    pattern = re.compile(r'\s+')
+    filename = re.sub(pattern, '_', filename)
     return filename
 
 

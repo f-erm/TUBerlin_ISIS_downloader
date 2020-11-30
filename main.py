@@ -13,11 +13,11 @@ if __name__ == "__main__":
     downloader = isisdownloader(data[0],data[1],logfile_name,data[4])
 
     #Show and filter the courses
-    course_list = downloader.get_courses(cleaned=False)
+    course_list = downloader.get_courses()
     course_list = [c for c in course_list if c[1] in data[2]]
     print("Courses to be downloaded:")
     for course in course_list:
-        print(namify(course[1]))
+        print(course[1])
 
     #Download the courses
     downloader.standartrun(course_list,savepath = data[3])

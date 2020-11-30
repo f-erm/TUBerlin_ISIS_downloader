@@ -44,7 +44,7 @@ def setup():
     except:
         print("Unable to log into ISIS")
         os._exit(1)
-    subjects = browser.get_courses(cleaned=False)
+    subjects = browser.get_courses()
     print("Availible courses:")
     for c, course in enumerate(subjects,start=1):
         print(str(c)+": "+course[1])
